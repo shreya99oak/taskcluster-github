@@ -272,3 +272,27 @@ api.declare({
     }),
   });
 });
+
+api.declare({
+  name: 'instaRepo',
+  title: 'Check if Repository has Installation',
+  description: [
+    'A list of installation IDs for a given organization',
+    'or user.',
+  ].join('\n'),
+  stability: 'experimental',
+  method: 'get',
+  route: '/repository/:owner/:repo',
+  output: 'boolean',
+}, async function(req, res) {
+  let {owner, repo} = req.params;
+  
+  let ownerInfo = await this.orgsDirectory.load({owner});
+
+  let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
+  let reposList = await instGithub.integrations.getInstallationRepositories();
+
+  let installed = reposList.repositories.map(repoData => repoData.name).includes(query.repo);
+
+  res.reply({installed});
+});
