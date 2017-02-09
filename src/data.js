@@ -75,12 +75,12 @@ module.exports.Build = Entity.configure({
   },
 });
 
-module.exports.orgsDirectory = Entity.configure({
+module.exports.OwnersDirectory = Entity.configure({
   version: 1,
   partitionKey: Entity.keys.StringKey('owner'),
   rowKey: Entity.keys.ConstantKey('someConstant'),
   properties: {
-    installationID: Entity.types.Date,
+    installationID: Entity.types.Number,
     owner: Entity.types.String,
   },
 });

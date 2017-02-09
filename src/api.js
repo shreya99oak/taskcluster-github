@@ -198,6 +198,12 @@ api.declare({
       msg.details = getReleaseDetails(body);
       msg.installationId = body.installation.id;
       publisherKey = 'release';
+    } else if (eventType == 'integration_installation') {
+      await this.context.OwnersDirectory.create({
+        installationID: body.installation.id,
+        owner: body.instalation.account.login,
+      });
+      return resolve(res, 200, 'Created table row!');
     } else {
       return resolve(res, 400, 'No publisher available for X-GitHub-Event: ' + eventType);
     }
@@ -283,16 +289,19 @@ api.declare({
   stability: 'experimental',
   method: 'get',
   route: '/repository/:owner/:repo',
-  output: 'boolean',
+  //output: 'boolean',
 }, async function(req, res) {
   let {owner, repo} = req.params;
   
-  let ownerInfo = await this.orgsDirectory.load({owner});
+  let ownerInfo = await this.OwnersDirectory.load({owner});
 
   let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
   let reposList = await instGithub.integrations.getInstallationRepositories();
 
-  let installed = reposList.repositories.map(repoData => repoData.name).includes(query.repo);
+  console.log("reduce returns", reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []}));
+  let installed = reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []})
+    .map(repoData => repoData.name)
+    .includes(repo);
 
   res.reply({installed});
 });

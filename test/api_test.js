@@ -13,6 +13,10 @@ suite('api', () => {
       handler: build => build.remove(),
     });
 
+    await helper.OwnersDirectory.scan({}, {
+      handler: owner => owner.remove(),
+    });
+
     await helper.Builds.create({
       organization: 'abc123',
       repository: 'def456',
@@ -61,6 +65,11 @@ suite('api', () => {
       eventType: 'push',
       eventId: '26370a80-ed65-11e6-8f4c-80082678482d',
     });
+
+    await helper.OwnersDirectory.create({
+      installationID: 9090,
+      owner: 'bobobob',
+    });
   });
 
   test('all builds', async function() {
@@ -99,5 +108,10 @@ suite('api', () => {
     assert.equal(builds.builds[0].organization, 'abc123');
     assert.equal(builds.builds[0].repository, 'xyz');
     assert.equal(builds.builds[0].sha, 'y650871208002a13ba35cf232c0e30d2c3d64783');
+  });
+
+  test('integration installation', async function() {
+    let result = await helper.github.instaRepo('bobobob', 'rrr');
+    assert.deepEqual(result, {installed: true});
   });
 });
