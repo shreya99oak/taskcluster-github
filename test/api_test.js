@@ -111,7 +111,7 @@ suite('api', () => {
   });
 
   test('integration installation', async function() {
-    let result = await helper.github.instaRepo('bobobob', 'rrr');
+    let result = await helper.github.isRepoSet('bobobob', 'rrr');
     assert.deepEqual(result, {installed: true});
   });
 });

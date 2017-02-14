@@ -280,16 +280,16 @@ api.declare({
 });
 
 api.declare({
-  name: 'instaRepo',
-  title: 'Check if Repository has Installation',
+  name: 'isRepoSet',
+  title: 'Check if Repository has Integration',
   description: [
-    'A list of installation IDs for a given organization',
-    'or user.',
+    'Checks if the integration has been installed for',
+    'a given repository of a given organization or user.',
   ].join('\n'),
   stability: 'experimental',
   method: 'get',
   route: '/repository/:owner/:repo',
-  //output: 'boolean',
+  output: 'is-repo-set.json',
 }, async function(req, res) {
   let {owner, repo} = req.params;
   
@@ -298,9 +298,8 @@ api.declare({
   let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
   let reposList = await instGithub.integrations.getInstallationRepositories();
 
-  console.log("reduce returns", reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []}));
   let installed = reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []})
-    .map(repoData => repoData.name)
+    .map(repo => repo.name)
     .includes(repo);
 
   res.reply({installed});
