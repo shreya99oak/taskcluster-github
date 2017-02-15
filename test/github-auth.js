@@ -5,10 +5,12 @@ let assert = require('assert');
 
 class FakeGithub {
   constructor(installation_id) {
+    this.installation_id = installation_id;
     this.taskcluster_yml_files = {};
     this.org_membership = {};
     this.repo_collaborators = {};
     this.github_users = [];
+    this.repositories = {};
 
     const throwError = code => {
       let err = new Error();
@@ -56,7 +58,7 @@ class FakeGithub {
         }
       },
       'integrations.getInstallationRepositories': async() => {
-        return [{repositories: [{name:'rrr'}, {name:'ttt'}]}];
+        return this.repositories[installation_id];
       },
     };
 
@@ -102,6 +104,11 @@ class FakeGithub {
 
   setUser({id, email}) {
     this.github_users.push({id: id.toString(), email});
+  }
+
+  setRepositories(repoName) {
+    let repos = [...repoName].map(repo => {name: repo});
+    this.repositories[this.installation_id] = {repositories: repos};
   }
 }
 

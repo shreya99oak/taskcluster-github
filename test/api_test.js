@@ -9,6 +9,8 @@ suite('api', () => {
   let _ = require('lodash');
 
   suiteSetup(async () => {
+    helper.github.inst(9091).setRepositories('coolRepo', 'anotherCoolRepo', 'awesomeRepo');
+
     await helper.Builds.scan({}, {
       handler: build => build.remove(),
     });
@@ -116,7 +118,7 @@ suite('api', () => {
   });
 
   test('integration installation', async function() {
-    let result = await helper.github.isRepoSet('qwert', 'rrr');
+    let result = await helper.github.isRepoSet('qwerty', 'coolRepo');
     assert.deepEqual(result, {installed: true});
   });
 });
