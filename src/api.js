@@ -291,16 +291,23 @@ api.declare({
   route: '/repository/:owner/:repo',
   output: 'is-repo-set.json',
 }, async function(req, res) {
+  // Extract owner and repo from request into variables
   let {owner, repo} = req.params;
-  
-  let ownerInfo = await this.OwnersDirectory.load({owner});
 
-  let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
-  let reposList = await instGithub.integrations.getInstallationRepositories();
+  // Look up the installation ID in Azure. If no such owner in the table, no error thrown
+  let ownerInfo = await this.OwnersDirectory.load({owner}, true);
 
-  let installed = reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []})
-    .map(repo => repo.name)
-    .includes(repo);
+  if (ownerInfo) {
+    let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
+    let reposList = await instGithub.integrations.getInstallationRepositories();
 
-  res.reply({installed});
+    // GitHub API returns an array of objects, each of wich has an array of repos
+    let installed = reposList.reduce((a, b) => a.repositories.concat(b.repositories), {repositories: []})
+      .map(repo => repo.name)
+      .includes(repo);
+
+    res.reply({installed});
+  }
+    
+  res.reply({installed: false});
 });

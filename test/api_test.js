@@ -68,7 +68,12 @@ suite('api', () => {
 
     await helper.OwnersDirectory.create({
       installationID: 9090,
-      owner: 'bobobob',
+      owner: 'abc123',
+    });
+
+    await helper.OwnersDirectory.create({
+      installationID: 9091,
+      owner: 'qwerty',
     });
   });
 
@@ -111,7 +116,7 @@ suite('api', () => {
   });
 
   test('integration installation', async function() {
-    let result = await helper.github.isRepoSet('bobobob', 'rrr');
+    let result = await helper.github.isRepoSet('qwert', 'rrr');
     assert.deepEqual(result, {installed: true});
   });
 });
