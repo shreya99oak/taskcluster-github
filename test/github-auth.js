@@ -11,6 +11,7 @@ class FakeGithub {
     this.repo_collaborators = {};
     this.github_users = [];
     this.repo_info = {};
+    this.repositories = {};
 
     const throwError = code => {
       let err = new Error();
