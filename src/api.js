@@ -200,7 +200,7 @@ api.declare({
       publisherKey = 'release';
     } else if (eventType == 'integration_installation') {
       await this.context.OwnersDirectory.create({
-        installationID: body.installation.id,
+        installationId: body.installation.id,
         owner: body.instalation.account.login,
       });
       return resolve(res, 200, 'Created table row!');
@@ -280,7 +280,7 @@ api.declare({
 });
 
 api.declare({
-  name: 'isRepoSet',
+  name: 'isInstalledFor',
   title: 'Check if Repository has Integration',
   description: [
     'Checks if the integration has been installed for',
@@ -289,7 +289,7 @@ api.declare({
   stability: 'experimental',
   method: 'get',
   route: '/repository/:owner/:repo',
-  output: 'is-repo-set.json',
+  output: 'is-installed-for.json',
 }, async function(req, res) {
   // Extract owner and repo from request into variables
   let {owner, repo} = req.params;
@@ -298,7 +298,7 @@ api.declare({
   let ownerInfo = await this.OwnersDirectory.load({owner}, true);
 
   if (ownerInfo) {
-    let instGithub = await this.github.getInstallationGithub(ownerInfo.installationID);
+    let instGithub = await this.github.getInstallationGithub(ownerInfo.installationId);
     let reposList = await instGithub.integrations.getInstallationRepositories();
 
     // GitHub API returns an array of objects, each of wich has an array of repos

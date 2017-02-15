@@ -9,7 +9,7 @@ suite('api', () => {
   let _ = require('lodash');
 
   suiteSetup(async () => {
-    helper.github.inst(9091).setRepositories('coolRepo', 'anotherCoolRepo', 'awesomeRepo');
+    helper.github.setRepositories('coolRepo', 'anotherCoolRepo', 'awesomeRepo');
 
     await helper.Builds.scan({}, {
       handler: build => build.remove(),
@@ -69,12 +69,12 @@ suite('api', () => {
     });
 
     await helper.OwnersDirectory.create({
-      installationID: 9090,
+      installationId: 9090,
       owner: 'abc123',
     });
 
     await helper.OwnersDirectory.create({
-      installationID: 9091,
+      installationId: 9091,
       owner: 'qwerty',
     });
   });
@@ -118,7 +118,7 @@ suite('api', () => {
   });
 
   test('integration installation', async function() {
-    let result = await helper.github.isRepoSet('qwerty', 'coolRepo');
+    let result = await helper.github.isInstalledFor('qwerty', 'coolRepo');
     assert.deepEqual(result, {installed: true});
   });
 });

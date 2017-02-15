@@ -11,6 +11,7 @@ class FakeGithub {
     this.repo_collaborators = {};
     this.github_users = [];
     this.repo_info = {};
+    this.repositories = {};
 
     const throwError = code => {
       let err = new Error();
@@ -66,7 +67,7 @@ class FakeGithub {
         }
       },
       'integrations.getInstallationRepositories': async() => {
-        return this.repositories[installation_id];
+        return this.repositories;
       },
     };
 
@@ -119,9 +120,8 @@ class FakeGithub {
     this.github_users.push({id: id.toString(), email});
   }
 
-  setRepositories(repoName) {
-    let repos = [...repoName].map(repo => {name: repo});
-    this.repositories[this.installation_id] = {repositories: repos};
+  setRepositories(...repoName) {
+    this.repositories = {repositories: [...repoName].map(repo => {name: repo})};
   }
 }
 

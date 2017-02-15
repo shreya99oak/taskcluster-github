@@ -80,7 +80,7 @@ module.exports.OwnersDirectory = Entity.configure({
   partitionKey: Entity.keys.StringKey('owner'),
   rowKey: Entity.keys.ConstantKey('someConstant'),
   properties: {
-    installationID: Entity.types.Number,
+    installationId: Entity.types.Number,
     owner: Entity.types.String,
   },
 });

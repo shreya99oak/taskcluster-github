@@ -1,5 +1,5 @@
 $schema:  http://json-schema.org/draft-04/schema#
-title:        "isRepoSet"
+title:        "isInstalledFor"
 description: |
   Check if Repository has Integration
 type:         object
