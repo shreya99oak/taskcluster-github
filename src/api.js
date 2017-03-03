@@ -304,7 +304,7 @@ api.declare({
     try {
       let instGithub = await this.github.getInstallationGithub(ownerInfo.installationId);
 
-      let taskclusterBot = await instGithub.users.getForUser({username: 'taskcluster[bot]'});
+      let taskclusterBot = await instGithub.integrations.getUserIdentity({});
       // Statuses is an array of status objects, where we find the relevant status
       let statuses = await instGithub.repos.getStatuses({owner, repo, ref: branch});
       let status = statuses.find(statusObject => statusObject.creator.id === taskclusterBot.id);
@@ -312,8 +312,8 @@ api.declare({
       // Then we send a corresponding image.
       return res.sendFile(status.state + '.svg', fileConfig);
     } catch (e) {
-      return res.sendFile('error.svg', fileConfig);
-      if (e.code < 500) {
+      res.sendFile('error.svg', fileConfig);
+      if (e.code < 500 && e.code >= 400) {
         throw e;
       }
     }
@@ -344,6 +344,7 @@ api.declare({
     try {
       let instGithub = await this.github.getInstallationGithub(ownerInfo.installationId);
       let reposList = await instGithub.integrations.getInstallationRepositories({});
+      console.log(reposList);
 
       // GitHub API returns an array of objects, each of wich has an array of repos
       let installed = reposList.repositories.map(repo => repo.name).indexOf(repo);
